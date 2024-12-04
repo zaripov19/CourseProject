@@ -14,4 +14,5 @@ public class Report extends BaseEntity {
 
     private String title;
     private String description;
+
 }
