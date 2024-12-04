@@ -39,14 +39,14 @@ public class BaseRepo<T> {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             T entity = em.find(persistentClass, id);
-            if (entity != null) {
-                em.remove(entity);
-            } else {
+            if (entity == null) {
                 throw new RuntimeException("Entity not found for ID: " + id);
             }
+            em.remove(entity);
             em.getTransaction().commit();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (jakarta.persistence.PersistenceException e) {
+            throw new RuntimeException("Cannot delete entity due to constraint violation: " + e.getMessage());
         }
     }
+
 }

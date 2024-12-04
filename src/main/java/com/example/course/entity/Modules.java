@@ -15,6 +15,7 @@ public class Modules extends BaseEntity {
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "course_id")
     private Courses course;
 
 }
