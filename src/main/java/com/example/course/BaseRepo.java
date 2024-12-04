@@ -1,6 +1,7 @@
 package com.example.course;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
@@ -31,6 +32,21 @@ public class BaseRepo<T> {
     public List<T> findAll() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("from %s".formatted(persistentClass.getSimpleName()), persistentClass).getResultList();
+        }
+    }
+
+    public void delete(Object id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            T entity = em.find(persistentClass, id);
+            if (entity != null) {
+                em.remove(entity);
+            } else {
+                throw new RuntimeException("Entity not found for ID: " + id);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
